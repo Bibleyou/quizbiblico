@@ -118,6 +118,11 @@
             color: white;
         }
         
+        .random-btn {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
         .level-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -133,6 +138,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
+            margin-top: 10px;
         }
         
         .start-btn:hover {
@@ -291,6 +297,8 @@
             padding: 20px;
             background-color: #f8f9fa;
             border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
         }
         
         .result-item {
@@ -304,23 +312,48 @@
             border-bottom: none;
         }
         
-        .restart-btn {
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            background-color: #9b59b6;
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .restart-btn, .share-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
-            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .restart-btn {
+            background-color: #9b59b6;
+        }
+        
+        .share-btn {
+            background-color: #3498db;
+        }
+        
+        .restart-btn:hover, .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .restart-btn:hover {
             background-color: #8e44ad;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .share-btn:hover {
+            background-color: #2980b9;
         }
         
         .progress-bar {
@@ -352,6 +385,130 @@
             font-size: 1rem;
             color: #7f8c8d;
         }
+        
+        .share-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .share-modal {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .share-modal h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .share-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .share-option {
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: bold;
+            color: white;
+            min-width: 150px;
+        }
+        
+        .share-whatsapp {
+            background-color: #25D366;
+        }
+        
+        .share-facebook {
+            background-color: #3b5998;
+        }
+        
+        .share-twitter {
+            background-color: #1DA1F2;
+        }
+        
+        .share-link {
+            background-color: #9b59b6;
+        }
+        
+        .share-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .close-share {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .copy-message {
+            margin-top: 15px;
+            color: #2ecc71;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .daily-info {
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .daily-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .daily-verse {
+            font-style: italic;
+            color: #2c3e50;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 3px solid #f1c40f;
+        }
+        
+        .daily-verse .reference {
+            display: block;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -359,17 +516,28 @@
         <header>
             <h1><i class="fas fa-bible icon"></i> Quiz Bíblico</h1>
             <p class="subtitle">Teste seu conhecimento das Sagradas Escrituras</p>
+            <p class="subtitle">Banco de dados com 50 perguntas - Cada quiz é único!</p>
         </header>
         
         <div class="intro-screen" id="introScreen">
+            <div class="daily-info">
+                <h3><i class="fas fa-calendar-day"></i> Quiz do Dia</h3>
+                <p>Hoje temos um quiz especial com perguntas selecionadas aleatoriamente do nosso banco de dados com 50 questões bíblicas!</p>
+                <div class="daily-verse">
+                    "Examinais as Escrituras, porque vós cuidais ter nelas a vida eterna, e são elas que de mim testificam."<br>
+                    <span class="reference">João 5:39</span>
+                </div>
+            </div>
+            
             <h2>Bem-vindo ao Quiz Bíblico!</h2>
-            <p>Este quiz contém perguntas sobre o Antigo e Novo Testamento, divididas em três níveis de dificuldade.</p>
-            <p>Selecione o nível de dificuldade desejado:</p>
+            <p>Este quiz contém 50 perguntas sobre o Antigo e Novo Testamento, divididas em três níveis de dificuldade.</p>
+            <p>Cada vez que você inicia um quiz, as perguntas são selecionadas aleatoriamente, tornando cada experiência única!</p>
             
             <div class="level-buttons">
-                <button class="level-btn easy-btn" data-level="easy">Fácil (5 perguntas)</button>
-                <button class="level-btn medium-btn" data-level="medium">Médio (10 perguntas)</button>
-                <button class="level-btn hard-btn" data-level="hard">Difícil (15 perguntas)</button>
+                <button class="level-btn easy-btn" data-level="easy">Fácil (10 perguntas)</button>
+                <button class="level-btn medium-btn" data-level="medium">Médio (15 perguntas)</button>
+                <button class="level-btn hard-btn" data-level="hard">Difícil (20 perguntas)</button>
+                <button class="level-btn random-btn" data-level="random">Aleatório (12 perguntas)</button>
             </div>
             
             <div class="question-counter">
@@ -412,18 +580,55 @@
                 <!-- Os detalhes dos resultados serão inseridos aqui -->
             </div>
             
-            <button class="restart-btn" id="restartBtn">Refazer Quiz</button>
+            <div class="action-buttons">
+                <button class="restart-btn" id="restartBtn">
+                    <i class="fas fa-redo"></i> Refazer Quiz
+                </button>
+                <button class="share-btn" id="shareBtn">
+                    <i class="fas fa-share-alt"></i> Compartilhar Resultado
+                </button>
+            </div>
+        </div>
+        
+        <div class="share-overlay" id="shareOverlay">
+            <div class="share-modal">
+                <h3><i class="fas fa-share-alt"></i> Compartilhar Resultado</h3>
+                <p>Compartilhe sua pontuação com amigos e desafie-os a fazer o quiz também!</p>
+                
+                <div class="share-options">
+                    <div class="share-option share-whatsapp" id="shareWhatsApp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </div>
+                    <div class="share-option share-facebook" id="shareFacebook">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </div>
+                    <div class="share-option share-twitter" id="shareTwitter">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </div>
+                    <div class="share-option share-link" id="shareLink">
+                        <i class="fas fa-link"></i> Copiar Link
+                    </div>
+                </div>
+                
+                <div class="copy-message" id="copyMessage">
+                    <i class="fas fa-check"></i> Link copiado para a área de transferência!
+                </div>
+                
+                <button class="close-share" id="closeShare">Fechar</button>
+            </div>
         </div>
         
         <footer>
-            <p>Quiz Bíblico &copy; 2023 - Desenvolvido para GitHub Pages</p>
-            <p>Baseado nas Sagradas Escrituras - Todas as perguntas são baseadas na Bíblia</p>
+            <p>Quiz Bíblico &copy; <span id="currentYear"></span> - Desenvolvido para GitHub Pages</p>
+            <p>Banco de dados com 50 perguntas bíblicas - Todas as perguntas são baseadas na Bíblia Sagrada</p>
+            <p>Cada quiz é único com perguntas selecionadas aleatoriamente!</p>
         </footer>
     </div>
 
     <script>
-        // Banco de dados de perguntas
+        // Banco de dados expandido com 50 perguntas bíblicas
         const bibleQuiz = {
+            // 20 perguntas fáceis
             easy: [
                 {
                     question: "Quantos discípulos Jesus escolheu?",
@@ -454,8 +659,100 @@
                     options: ["Êxodo", "Gênesis", "Mateus", "Salmos"],
                     answer: 1,
                     explanation: "Resposta correta: Gênesis. O livro de Gênesis é o primeiro livro da Bíblia e relata a criação do mundo."
+                },
+                {
+                    question: "Quem foi a primeira mulher, criada por Deus?",
+                    options: ["Sara", "Rebeca", "Eva", "Maria"],
+                    answer: 2,
+                    explanation: "Resposta correta: Eva. Eva foi criada por Deus a partir da costela de Adão para ser sua companheira."
+                },
+                {
+                    question: "Qual animal enganou Eva no Jardim do Éden?",
+                    options: ["Leão", "Cobra", "Macaco", "Elefante"],
+                    answer: 1,
+                    explanation: "Resposta correta: Cobra. A serpente (cobra) enganou Eva, levando-a a desobedecer a Deus."
+                },
+                {
+                    question: "Quem construiu uma arca para salvar sua família e os animais do dilúvio?",
+                    options: ["Moisés", "Noé", "Abraão", "José"],
+                    answer: 1,
+                    explanation: "Resposta correta: Noé. Por ordem de Deus, Noé construiu uma arca para salvar sua família e um casal de cada animal do dilúvio."
+                },
+                {
+                    question: "Qual apóstolo era pescador antes de seguir Jesus?",
+                    options: ["Mateus", "Judas", "Pedro", "Paulo"],
+                    answer: 2,
+                    explanation: "Resposta correta: Pedro. Pedro e seu irmão André eram pescadores quando Jesus os chamou."
+                },
+                {
+                    question: "Quantos mandamentos Deus deu a Moisés?",
+                    options: ["7", "10", "12", "40"],
+                    answer: 1,
+                    explanation: "Resposta correta: 10. Os Dez Mandamentos foram dados por Deus a Moisés no Monte Sinai."
+                },
+                {
+                    question: "Quem foi lançado na cova dos leões por orar a Deus?",
+                    options: ["José", "Davi", "Daniel", "Elias"],
+                    answer: 2,
+                    explanation: "Resposta correta: Daniel. Por continuar orando a Deus, Daniel foi lançado na cova dos leões, mas Deus o protegeu."
+                },
+                {
+                    question: "Qual era a cidade natal de Jesus?",
+                    options: ["Jerusalém", "Belém", "Nazaré", "Galileia"],
+                    answer: 1,
+                    explanation: "Resposta correta: Belém. Jesus nasceu em Belém, conforme profetizado."
+                },
+                {
+                    question: "Quem foi vendido como escravo por seus irmãos?",
+                    options: ["Moisés", "José", "Isaque", "Jacó"],
+                    answer: 1,
+                    explanation: "Resposta correta: José. Seus irmãos o venderam a mercadores que o levaram para o Egito."
+                },
+                {
+                    question: "Qual destes NÃO é um livro do Novo Testamento?",
+                    options: ["Mateus", "Êxodo", "Lucas", "Atos"],
+                    answer: 1,
+                    explanation: "Resposta correta: Êxodo. Êxodo é um livro do Antigo Testamento."
+                },
+                {
+                    question: "Quem foi a mãe de Jesus?",
+                    options: ["Isabel", "Maria", "Ana", "Ester"],
+                    answer: 1,
+                    explanation: "Resposta correta: Maria. Maria foi escolhida por Deus para ser a mãe de Jesus."
+                },
+                {
+                    question: "Quem foi o primeiro rei de Israel?",
+                    options: ["Davi", "Salomão", "Saul", "Josué"],
+                    answer: 2,
+                    explanation: "Resposta correta: Saul. Saul foi o primeiro rei de Israel, ungido pelo profeta Samuel."
+                },
+                {
+                    question: "Qual destes é um dos Dez Mandamentos?",
+                    options: ["Não matarás", "Amarás o próximo como a ti mesmo", "Arrependei-vos", "Sede santos"],
+                    answer: 0,
+                    explanation: "Resposta correta: Não matarás. Este é o sexto dos Dez Mandamentos."
+                },
+                {
+                    question: "Quem foi engolido por um grande peixe?",
+                    options: ["Paulo", "Jonas", "Pedro", "Moisés"],
+                    answer: 1,
+                    explanation: "Resposta correta: Jonas. Jonas foi engolido por um grande peixe quando tentou fugir da missão que Deus lhe deu."
+                },
+                {
+                    question: "Qual discípulo duvidou da ressurreição de Jesus até vê-Lo pessoalmente?",
+                    options: ["Pedro", "João", "Tomé", "Tiago"],
+                    answer: 2,
+                    explanation: "Resposta correta: Tomé. Tomé duvidou até que Jesus apareceu a ele e mostrou suas feridas."
+                },
+                {
+                    question: "Quem foi o homem mais forte da Bíblia?",
+                    options: ["Golias", "Sansão", "Davi", "Moisés"],
+                    answer: 1,
+                    explanation: "Resposta correta: Sansão. Sansão recebeu força sobre-humana de Deus."
                 }
             ],
+            
+            // 20 perguntas médias
             medium: [
                 {
                     question: "Qual apóstolo era coletor de impostos antes de seguir Jesus?",
@@ -486,8 +783,100 @@
                     options: ["Gafanhotos", "Sapos", "Úlceras", "Terremoto"],
                     answer: 3,
                     explanation: "Resposta correta: Terremoto. As dez pragas foram: sangue, rãs, piolhos, moscas, pestes, úlceras, granizo, gafanhotos, trevas e morte dos primogênitos."
+                },
+                {
+                    question: "Quem era irmão de Moisés?",
+                    options: ["Josué", "Calebe", "Arão", "Elias"],
+                    answer: 2,
+                    explanation: "Resposta correta: Arão. Arão era irmão mais velho de Moisés e se tornou o primeiro sumo sacerdote de Israel."
+                },
+                {
+                    question: "Quem foi a primeira mártir cristã?",
+                    options: ["Estêvão", "Pedro", "Paulo", "Tiago"],
+                    answer: 0,
+                    explanation: "Resposta correta: Estêvão. Ele foi apedrejado até a morte por pregar sobre Jesus."
+                },
+                {
+                    question: "Quantos livros tem o Novo Testamento?",
+                    options: ["27", "39", "66", "50"],
+                    answer: 0,
+                    explanation: "Resposta correta: 27. O Novo Testamento contém 27 livros."
+                },
+                {
+                    question: "Qual destes NÃO é um dos evangelhos?",
+                    options: ["Mateus", "Marcos", "Lucas", "Paulo"],
+                    answer: 3,
+                    explanation: "Resposta correta: Paulo. Os evangelhos são Mateus, Marcos, Lucas e João."
+                },
+                {
+                    question: "Quem foi o pai de João Batista?",
+                    options: ["Zacarias", "José", "Eli", "Joaquim"],
+                    answer: 0,
+                    explanation: "Resposta correta: Zacarias. Ele era sacerdote e recebeu a visita do anjo Gabriel anunciando o nascimento de João."
+                },
+                {
+                    question: "Qual era a profissão de Paulo antes de se converter?",
+                    options: ["Pescador", "Carpinteiro", "Fabricante de tendas", "Fariseu"],
+                    answer: 3,
+                    explanation: "Resposta correta: Fariseu. Paulo (Saulo) era fariseu e perseguidor dos cristãos antes de sua conversão."
+                },
+                {
+                    question: "Quem sucedeu Moisés como líder de Israel?",
+                    options: ["Calebe", "Josué", "Arão", "Gideão"],
+                    answer: 1,
+                    explanation: "Resposta correta: Josué. Ele liderou o povo de Israel na conquista da Terra Prometida."
+                },
+                {
+                    question: "Qual apóstolo escreveu mais livros do Novo Testamento?",
+                    options: ["Pedro", "João", "Paulo", "Tiago"],
+                    answer: 2,
+                    explanation: "Resposta correta: Paulo. Ele escreveu 13 (ou 14, incluindo Hebreus) livros do Novo Testamento."
+                },
+                {
+                    question: "Quantos anos tinha Jesus quando começou seu ministério?",
+                    options: ["30", "33", "25", "40"],
+                    answer: 0,
+                    explanation: "Resposta correta: 30. Lucas 3:23 diz que Jesus tinha cerca de 30 anos quando começou seu ministério."
+                },
+                {
+                    question: "Quem foi o primeiro discípulo a ser martirizado?",
+                    options: ["Pedro", "Tiago", "André", "Filipe"],
+                    answer: 1,
+                    explanation: "Resposta correta: Tiago. Tiago, irmão de João, foi o primeiro apóstolo a ser martirizado (Atos 12:2)."
+                },
+                {
+                    question: "Qual era o nome do jardim onde Adão e Eva viviam?",
+                    options: ["Jardim do Éden", "Jardim de Getsêmani", "Jardim do Senhor", "Jardim do Paraíso"],
+                    answer: 0,
+                    explanation: "Resposta correta: Jardim do Éden. Era o lugar perfeito onde Deus colocou Adão e Eva."
+                },
+                {
+                    question: "Quem foi o sucessor do rei Davi?",
+                    options: ["Absalão", "Salomão", "Roboão", "Saul"],
+                    answer: 1,
+                    explanation: "Resposta correta: Salomão. Ele era filho de Davi com Bate-Seba e construiu o primeiro templo em Jerusalém."
+                },
+                {
+                    question: "Quem interpretou os sonhos do Faraó no Egito?",
+                    options: ["Moisés", "Daniel", "José", "Ezequiel"],
+                    answer: 2,
+                    explanation: "Resposta correta: José. Ele interpretou os sonhos do Faraó sobre os sete anos de fartura e sete anos de fome."
+                },
+                {
+                    question: "Qual destes NÃO é um dos frutos do Espírito?",
+                    options: ["Amor", "Paz", "Fé", "Paciência"],
+                    answer: 2,
+                    explanation: "Resposta correta: Fé. Os frutos do Espírito são: amor, alegria, paz, paciência, benignidade, bondade, fidelidade, mansidão e domínio próprio (Gálatas 5:22-23)."
+                },
+                {
+                    question: "Qual era o nome da esposa de Abraão?",
+                    options: ["Rebeca", "Sara", "Raquel", "Lea"],
+                    answer: 1,
+                    explanation: "Resposta correta: Sara. Ela era estéril, mas Deus a abençoou com um filho, Isaque, em sua velhice."
                 }
             ],
+            
+            // 20 perguntas difíceis
             hard: [
                 {
                     question: "Qual o nome do sumo sacerdote perante quem Jesus foi levado após sua prisão?",
@@ -518,6 +907,96 @@
                     options: ["Sansão", "Gideão", "Eúde", "Débora"],
                     answer: 2,
                     explanation: "Resposta correta: Eúde. Ele era canhoto e libertou Israel dos moabitas (Juízes 3:15)."
+                },
+                {
+                    question: "Quantos salmos existem no livro de Salmos?",
+                    options: ["100", "150", "120", "75"],
+                    answer: 1,
+                    explanation: "Resposta correta: 150. O livro de Salmos contém 150 cânticos e poemas."
+                },
+                {
+                    question: "Quem foi o autor do livro de Hebreus?",
+                    options: ["Paulo", "Apolo", "Barnabé", "Desconhecido"],
+                    answer: 3,
+                    explanation: "Resposta correta: Desconhecido. A carta aos Hebreus é anônima, embora tradicionalmente atribuída a Paulo."
+                },
+                {
+                    question: "Quantas vezes Jesus foi tentado pelo diabo no deserto?",
+                    options: ["3", "4", "7", "40"],
+                    answer: 0,
+                    explanation: "Resposta correta: 3. Jesus foi tentado três vezes pelo diabo durante seus 40 dias no deserto."
+                },
+                {
+                    question: "Qual era o nome do monte onde Moisés recebeu os Dez Mandamentos?",
+                    options: ["Monte das Oliveiras", "Monte Sinai", "Monte Carmelo", "Monte Moriá"],
+                    answer: 1,
+                    explanation: "Resposta correta: Monte Sinai. Foi onde Deus deu a Moisés as tábuas da lei."
+                },
+                {
+                    question: "Quem era conhecido como 'o discípulo amado'?",
+                    options: ["Pedro", "João", "Tiago", "André"],
+                    answer: 1,
+                    explanation: "Resposta correta: João. Ele é frequentemente referido como 'o discípulo a quem Jesus amava'."
+                },
+                {
+                    question: "Qual era o nome do rei que governava quando Jesus nasceu?",
+                    options: ["Herodes", "César Augusto", "Pilatos", "Agripa"],
+                    answer: 1,
+                    explanation: "Resposta correta: César Augusto. Ele era o imperador romano quando Jesus nasceu."
+                },
+                {
+                    question: "Quantos livros tem a Bíblia Protestante?",
+                    options: ["66", "73", "80", "27"],
+                    answer: 0,
+                    explanation: "Resposta correta: 66. A Bíblia Protestante tem 39 livros no AT e 27 no NT, totalizando 66."
+                },
+                {
+                    question: "Qual era o nome do homem rico que não ajudou Lázaro?",
+                    options: ["Nicodemos", "Simão", "Zaqueu", "Não tem nome"],
+                    answer: 3,
+                    explanation: "Resposta correta: Não tem nome. Na parábola, o homem rico não é nomeado (Lucas 16:19-31)."
+                },
+                {
+                    question: "Quem foi o profeta que enfrentou os profetas de Baal no Monte Carmelo?",
+                    options: ["Elias", "Eliseu", "Isaías", "Jeremias"],
+                    answer: 0,
+                    explanation: "Resposta correta: Elias. Ele desafiou os profetas de Baal e provou que o Senhor é Deus."
+                },
+                {
+                    question: "Qual era a tribo de Jesus?",
+                    options: ["Judá", "Levi", "Benjamim", "Naftali"],
+                    answer: 0,
+                    explanation: "Resposta correta: Judá. Jesus era da tribo de Judá, da linhagem de Davi."
+                },
+                {
+                    question: "Quantas pessoas foram salvas na arca de Noé?",
+                    options: ["4", "6", "8", "10"],
+                    answer: 2,
+                    explanation: "Resposta correta: 8. Noé, sua esposa, seus três filhos e suas noras, totalizando 8 pessoas."
+                },
+                {
+                    question: "Quem foi o primeiro mártir registrado na Bíblia?",
+                    options: ["Abel", "Estêvão", "João Batista", "Urias"],
+                    answer: 0,
+                    explanation: "Resposta correta: Abel. Ele foi morto por seu irmão Caim (Gênesis 4:8)."
+                },
+                {
+                    question: "Qual era a cidade onde Jesus realizou seu primeiro milagre?",
+                    options: ["Jerusalém", "Belém", "Caná", "Nazaré"],
+                    answer: 2,
+                    explanation: "Resposta correta: Caná. Jesus transformou água em vinho em um casamento em Caná."
+                },
+                {
+                    question: "Qual apóstolo era irmão de Pedro?",
+                    options: ["Tiago", "João", "André", "Filipe"],
+                    answer: 2,
+                    explanation: "Resposta correta: André. Ele era irmão de Simão Pedro e foi quem o apresentou a Jesus."
+                },
+                {
+                    question: "Quantas vezes Pedro negou Jesus?",
+                    options: ["1", "2", "3", "4"],
+                    answer: 2,
+                    explanation: "Resposta correta: 3. Pedro negou Jesus três vezes antes do galo cantar, conforme predito."
                 }
             ]
         };
@@ -540,6 +1019,15 @@
         const scoreText = document.getElementById('scoreText');
         const resultDetails = document.getElementById('resultDetails');
         const restartBtn = document.getElementById('restartBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const shareOverlay = document.getElementById('shareOverlay');
+        const closeShare = document.getElementById('closeShare');
+        const shareWhatsApp = document.getElementById('shareWhatsApp');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareLink = document.getElementById('shareLink');
+        const copyMessage = document.getElementById('copyMessage');
+        const currentYear = document.getElementById('currentYear');
 
         // Variáveis do quiz
         let currentLevel = '';
@@ -547,12 +1035,17 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let score = 0;
+        let quizStartTime = null;
+        let quizEndTime = null;
 
         // Event Listeners
         levelButtons.forEach(button => {
             button.addEventListener('click', () => {
                 // Remover seleção de todos os botões
-                levelButtons.forEach(btn => btn.style.opacity = '0.7');
+                levelButtons.forEach(btn => {
+                    btn.style.opacity = '0.7';
+                    btn.style.boxShadow = 'none';
+                });
                 
                 // Selecionar o botão clicado
                 button.style.opacity = '1';
@@ -570,7 +1063,8 @@
                 const levelNames = {
                     easy: 'Fácil',
                     medium: 'Médio', 
-                    hard: 'Difícil'
+                    hard: 'Difícil',
+                    random: 'Aleatório'
                 };
                 
                 startBtn.textContent = `Iniciar Quiz ${levelNames[currentLevel]}`;
@@ -582,14 +1076,30 @@
         nextBtn.addEventListener('click', showNextQuestion);
         submitBtn.addEventListener('click', showResults);
         restartBtn.addEventListener('click', restartQuiz);
+        shareBtn.addEventListener('click', showShareOverlay);
+        closeShare.addEventListener('click', hideShareOverlay);
+        shareWhatsApp.addEventListener('click', shareOnWhatsApp);
+        shareFacebook.addEventListener('click', shareOnFacebook);
+        shareTwitter.addEventListener('click', shareOnTwitter);
+        shareLink.addEventListener('click', copyShareLink);
+
+        // Fechar overlay ao clicar fora do modal
+        shareOverlay.addEventListener('click', (e) => {
+            if (e.target === shareOverlay) {
+                hideShareOverlay();
+            }
+        });
+
+        // Atualizar ano atual no rodapé
+        currentYear.textContent = new Date().getFullYear();
 
         // Funções
         function startQuiz() {
-            // Obter perguntas do nível selecionado
-            questions = [...bibleQuiz[currentLevel]];
+            // Registrar hora de início
+            quizStartTime = new Date();
             
-            // Embaralhar as perguntas (opcional)
-            // questions = shuffleArray(questions);
+            // Selecionar perguntas aleatoriamente do banco de dados
+            selectRandomQuestions();
             
             // Inicializar array de respostas do usuário
             userAnswers = new Array(questions.length).fill(null);
@@ -603,13 +1113,15 @@
             const levelNames = {
                 easy: 'Fácil',
                 medium: 'Médio',
-                hard: 'Difícil'
+                hard: 'Difícil',
+                random: 'Misto'
             };
             
             const levelColors = {
                 easy: '#2ecc71',
                 medium: '#f39c12',
-                hard: '#e74c3c'
+                hard: '#e74c3c',
+                random: '#9b59b6'
             };
             
             difficultyBadge.textContent = `Nível: ${levelNames[currentLevel]}`;
@@ -617,6 +1129,42 @@
             
             // Mostrar primeira pergunta
             showQuestion(currentQuestionIndex);
+        }
+
+        function selectRandomQuestions() {
+            // Determinar quantas perguntas selecionar baseado no nível
+            let questionCount = 0;
+            let sourceQuestions = [];
+            
+            switch(currentLevel) {
+                case 'easy':
+                    questionCount = 10;
+                    sourceQuestions = [...bibleQuiz.easy];
+                    break;
+                case 'medium':
+                    questionCount = 15;
+                    sourceQuestions = [...bibleQuiz.medium];
+                    break;
+                case 'hard':
+                    questionCount = 20;
+                    sourceQuestions = [...bibleQuiz.hard];
+                    break;
+                case 'random':
+                    questionCount = 12;
+                    // Misturar perguntas de todos os níveis
+                    sourceQuestions = [
+                        ...bibleQuiz.easy.slice(0, 4),
+                        ...bibleQuiz.medium.slice(0, 4),
+                        ...bibleQuiz.hard.slice(0, 4)
+                    ];
+                    break;
+            }
+            
+            // Embaralhar as perguntas
+            sourceQuestions = shuffleArray(sourceQuestions);
+            
+            // Selecionar as primeiras N perguntas
+            questions = sourceQuestions.slice(0, questionCount);
         }
 
         function showQuestion(index) {
@@ -704,6 +1252,9 @@
         }
 
         function showResults() {
+            // Registrar hora de término
+            quizEndTime = new Date();
+            
             // Calcular pontuação
             score = 0;
             questions.forEach((question, index) => {
@@ -722,22 +1273,24 @@
             // Determinar mensagem baseada na pontuação
             const percentage = (score / questions.length) * 100;
             let message = '';
+            let color = '';
             
             if (percentage >= 90) {
                 message = "Excelente! Você é um expert bíblico!";
-                finalScore.style.color = "#2ecc71";
+                color = "#2ecc71";
             } else if (percentage >= 70) {
                 message = "Muito bom! Você conhece bem as Escrituras!";
-                finalScore.style.color = "#3498db";
+                color = "#3498db";
             } else if (percentage >= 50) {
                 message = "Bom! Você tem um conhecimento básico da Bíblia.";
-                finalScore.style.color = "#f39c12";
+                color = "#f39c12";
             } else {
                 message = "Continue estudando a Palavra de Deus!";
-                finalScore.style.color = "#e74c3c";
+                color = "#e74c3c";
             }
             
             scoreText.textContent = message;
+            finalScore.style.color = color;
             
             // Adicionar detalhes das perguntas e respostas
             resultDetails.innerHTML = '';
@@ -786,6 +1339,8 @@
             currentQuestionIndex = 0;
             userAnswers = [];
             score = 0;
+            quizStartTime = null;
+            quizEndTime = null;
             
             // Mostrar tela inicial
             introScreen.style.display = 'block';
@@ -804,7 +1359,44 @@
             startBtn.textContent = 'Iniciar Quiz';
         }
 
-        // Função para embaralhar array (opcional)
+        function showShareOverlay() {
+            shareOverlay.style.display = 'flex';
+            copyMessage.style.display = 'none';
+        }
+
+        function hideShareOverlay() {
+            shareOverlay.style.display = 'none';
+        }
+
+        function shareOnWhatsApp() {
+            const text = `Acabei de fazer o Quiz Bíblico e acertei ${score} de ${questions.length} perguntas! Tente você também: ${window.location.href}`;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function shareOnFacebook() {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank', 'width=600,height=400');
+        }
+
+        function shareOnTwitter() {
+            const text = `Acabei de fazer o Quiz Bíblico e acertei ${score}/${questions.length}! Tente você também:`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank', 'width=600,height=400');
+        }
+
+        function copyShareLink() {
+            const text = `Acabei de fazer o Quiz Bíblico e acertei ${score} de ${questions.length} perguntas! Tente você também: ${window.location.href}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                copyMessage.style.display = 'block';
+                setTimeout(() => {
+                    copyMessage.style.display = 'none';
+                }, 3000);
+            });
+        }
+
+        // Função para embaralhar array
         function shuffleArray(array) {
             const newArray = [...array];
             for (let i = newArray.length - 1; i > 0; i--) {

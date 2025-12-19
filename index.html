@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Bíblico - Teste Seu Conhecimento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: linear-gradient(135deg, #f9f9f9 0%, #e6f2ff 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #f1c40f;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .icon {
+            font-size: 2rem;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        .quiz-container {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .intro-screen {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .intro-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .intro-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        
+        .level-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .level-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .easy-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .medium-btn {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .hard-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .level-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .question-number {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+        
+        .difficulty-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .option.selected {
+            background-color: #d1ecf1;
+            border-color: #3498db;
+            color: #0c5460;
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.wrong {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .prev-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .next-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .submit-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result-screen {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .score {
+            font-size: 5rem;
+            color: #3498db;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .score-text {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        
+        .result-details {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .result-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .restart-btn {
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .question-counter {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bible icon"></i> Quiz Bíblico</h1>
+            <p class="subtitle">Teste seu conhecimento das Sagradas Escrituras</p>
+        </header>
+        
+        <div class="intro-screen" id="introScreen">
+            <h2>Bem-vindo ao Quiz Bíblico!</h2>
+            <p>Este quiz contém perguntas sobre o Antigo e Novo Testamento, divididas em três níveis de dificuldade.</p>
+            <p>Selecione o nível de dificuldade desejado:</p>
+            
+            <div class="level-buttons">
+                <button class="level-btn easy-btn" data-level="easy">Fácil (5 perguntas)</button>
+                <button class="level-btn medium-btn" data-level="medium">Médio (10 perguntas)</button>
+                <button class="level-btn hard-btn" data-level="hard">Difícil (15 perguntas)</button>
+            </div>
+            
+            <div class="question-counter">
+                <p><strong>Instruções:</strong> Selecione uma resposta para cada pergunta. Você pode navegar entre as perguntas antes de finalizar.</p>
+                <p>Boa sorte e que a sabedoria divina o guie!</p>
+            </div>
+            
+            <button class="start-btn" id="startBtn" disabled>Iniciar Quiz</button>
+        </div>
+        
+        <div class="quiz-container" id="quizContainer">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Pergunta 1 de 10</div>
+                <div class="difficulty-badge" id="difficultyBadge">Nível: Médio</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            
+            <div class="question-text" id="questionText">Pergunta será exibida aqui</div>
+            
+            <div class="options-container" id="optionsContainer">
+                <!-- As opções serão inseridas aqui via JavaScript -->
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn" disabled>Anterior</button>
+                <button class="nav-btn next-btn" id="nextBtn">Próxima</button>
+                <button class="nav-btn submit-btn" id="submitBtn" style="display:none;">Finalizar Quiz</button>
+            </div>
+        </div>
+        
+        <div class="result-screen" id="resultScreen">
+            <h2 class="result-title">Quiz Concluído!</h2>
+            <div class="score" id="finalScore">0/10</div>
+            <div class="score-text" id="scoreText">Você é um iniciante. Continue estudando a Palavra!</div>
+            
+            <div class="result-details" id="resultDetails">
+                <!-- Os detalhes dos resultados serão inseridos aqui -->
+            </div>
+            
+            <button class="restart-btn" id="restartBtn">Refazer Quiz</button>
+        </div>
+        
+        <footer>
+            <p>Quiz Bíblico &copy; 2023 - Desenvolvido para GitHub Pages</p>
+            <p>Baseado nas Sagradas Escrituras - Todas as perguntas são baseadas na Bíblia</p>
+        </footer>
+    </div>
+
+    <script>
+        // Banco de dados de perguntas
+        const bibleQuiz = {
+            easy: [
+                {
+                    question: "Quantos discípulos Jesus escolheu?",
+                    options: ["7", "10", "12", "15"],
+                    answer: 2,
+                    explanation: "Resposta correta: 12. Jesus escolheu doze discípulos para estar com Ele e para enviá-los a pregar."
+                },
+                {
+                    question: "Em que dia Deus descansou após a criação?",
+                    options: ["Quinto", "Sexto", "Sétimo", "Primeiro"],
+                    answer: 2,
+                    explanation: "Resposta correta: Sétimo. Deus descansou no sétimo dia após a criação, abençoando e santificando esse dia."
+                },
+                {
+                    question: "Qual foi a primeira praga do Egito?",
+                    options: ["Piolhos", "Rãs", "Água transformada em sangue", "Trevas"],
+                    answer: 2,
+                    explanation: "Resposta correta: Água transformada em sangue. Essa foi a primeira praga que Deus enviou sobre o Egito através de Moisés."
+                },
+                {
+                    question: "Quem negou Jesus três vezes antes do galo cantar?",
+                    options: ["João", "Judas", "Pedro", "Tomé"],
+                    answer: 2,
+                    explanation: "Resposta correta: Pedro. Como Jesus havia predito, Pedro O negou três vezes antes do galo cantar."
+                },
+                {
+                    question: "Qual é o primeiro livro da Bíblia?",
+                    options: ["Êxodo", "Gênesis", "Mateus", "Salmos"],
+                    answer: 1,
+                    explanation: "Resposta correta: Gênesis. O livro de Gênesis é o primeiro livro da Bíblia e relata a criação do mundo."
+                }
+            ],
+            medium: [
+                {
+                    question: "Qual apóstolo era coletor de impostos antes de seguir Jesus?",
+                    options: ["Simão Pedro", "Mateus", "Paulo", "Tiago"],
+                    answer: 1,
+                    explanation: "Resposta correta: Mateus. Ele era coletor de impostos em Cafarnaum quando Jesus o chamou para ser discípulo."
+                },
+                {
+                    question: "Quem foi jogado na cova dos leões, mas saiu ileso?",
+                    options: ["José", "Daniel", "Davi", "Sadraque"],
+                    answer: 1,
+                    explanation: "Resposta correta: Daniel. Por continuar orando a Deus, Daniel foi lançado na cova dos leões, mas Deus enviou seu anjo para protegê-lo."
+                },
+                {
+                    question: "Qual profeta foi engolido por um grande peixe?",
+                    options: ["Elias", "Isaías", "Jonas", "Jeremias"],
+                    answer: 2,
+                    explanation: "Resposta correta: Jonas. Ele tentou fugir da missão que Deus lhe deu e foi engolido por um grande peixe, onde permaneceu três dias."
+                },
+                {
+                    question: "Qual era o nome original de Abraão?",
+                    options: ["Labão", "Abrão", "Isaque", "Jacó"],
+                    answer: 1,
+                    explanation: "Resposta correta: Abrão. Deus mudou seu nome para Abraão, que significa 'pai de muitas nações'."
+                },
+                {
+                    question: "Qual destas NÃO é uma das pragas do Egito?",
+                    options: ["Gafanhotos", "Sapos", "Úlceras", "Terremoto"],
+                    answer: 3,
+                    explanation: "Resposta correta: Terremoto. As dez pragas foram: sangue, rãs, piolhos, moscas, pestes, úlceras, granizo, gafanhotos, trevas e morte dos primogênitos."
+                }
+            ],
+            hard: [
+                {
+                    question: "Qual o nome do sumo sacerdote perante quem Jesus foi levado após sua prisão?",
+                    options: ["Herodes", "Pôncio Pilatos", "Caifás", "Anás"],
+                    answer: 2,
+                    explanation: "Resposta correta: Caifás. Ele era o sumo sacerdote naquela época e interrogou Jesus após Sua prisão."
+                },
+                {
+                    question: "Quem disse a frase: 'Porque, para mim, o viver é Cristo, e o morrer é lucro'?",
+                    options: ["Jesus", "Apóstolo Pedro", "Apóstolo Paulo", "Apóstolo João"],
+                    answer: 2,
+                    explanation: "Resposta correta: Apóstolo Paulo. Ele escreveu isso em sua carta aos Filipenses (Filipenses 1:21)."
+                },
+                {
+                    question: "Qual foi o único livro do Novo Testamento que não é uma carta, nem um evangelho, nem um livro de profecia?",
+                    options: ["Hebreus", "Atos dos Apóstolos", "Tiago", "Apocalipse"],
+                    answer: 1,
+                    explanation: "Resposta correta: Atos dos Apóstolos. É um livro histórico que narra os primeiros anos da Igreja Cristã."
+                },
+                {
+                    question: "Quantos anos o povo de Israel vagueou pelo deserto após a saída do Egito?",
+                    options: ["20 anos", "40 anos", "70 anos", "1 ano"],
+                    answer: 1,
+                    explanation: "Resposta correta: 40 anos. Por causa da desobediência, a geração que saiu do Egito vagou 40 anos no deserto até que todos morressem, exceto Josué e Calebe."
+                },
+                {
+                    question: "Qual era o nome do juiz canhoto que libertou Israel?",
+                    options: ["Sansão", "Gideão", "Eúde", "Débora"],
+                    answer: 2,
+                    explanation: "Resposta correta: Eúde. Ele era canhoto e libertou Israel dos moabitas (Juízes 3:15)."
+                }
+            ]
+        };
+
+        // Elementos DOM
+        const introScreen = document.getElementById('introScreen');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultScreen = document.getElementById('resultScreen');
+        const startBtn = document.getElementById('startBtn');
+        const levelButtons = document.querySelectorAll('.level-btn');
+        const questionNumber = document.getElementById('questionNumber');
+        const difficultyBadge = document.getElementById('difficultyBadge');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressBar = document.getElementById('progressBar');
+        const finalScore = document.getElementById('finalScore');
+        const scoreText = document.getElementById('scoreText');
+        const resultDetails = document.getElementById('resultDetails');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Variáveis do quiz
+        let currentLevel = '';
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let score = 0;
+
+        // Event Listeners
+        levelButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remover seleção de todos os botões
+                levelButtons.forEach(btn => btn.style.opacity = '0.7');
+                
+                // Selecionar o botão clicado
+                button.style.opacity = '1';
+                button.style.boxShadow = '0 0 0 3px rgba(52, 152, 219, 0.5)';
+                
+                // Ativar botão de iniciar
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                startBtn.style.cursor = 'pointer';
+                
+                // Definir nível atual
+                currentLevel = button.getAttribute('data-level');
+                
+                // Definir texto do botão de início baseado no nível
+                const levelNames = {
+                    easy: 'Fácil',
+                    medium: 'Médio', 
+                    hard: 'Difícil'
+                };
+                
+                startBtn.textContent = `Iniciar Quiz ${levelNames[currentLevel]}`;
+            });
+        });
+
+        startBtn.addEventListener('click', startQuiz);
+        prevBtn.addEventListener('click', showPreviousQuestion);
+        nextBtn.addEventListener('click', showNextQuestion);
+        submitBtn.addEventListener('click', showResults);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        // Funções
+        function startQuiz() {
+            // Obter perguntas do nível selecionado
+            questions = [...bibleQuiz[currentLevel]];
+            
+            // Embaralhar as perguntas (opcional)
+            // questions = shuffleArray(questions);
+            
+            // Inicializar array de respostas do usuário
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // Mostrar container do quiz e esconder tela inicial
+            introScreen.style.display = 'none';
+            quizContainer.style.display = 'block';
+            resultScreen.style.display = 'none';
+            
+            // Configurar badge de dificuldade
+            const levelNames = {
+                easy: 'Fácil',
+                medium: 'Médio',
+                hard: 'Difícil'
+            };
+            
+            const levelColors = {
+                easy: '#2ecc71',
+                medium: '#f39c12',
+                hard: '#e74c3c'
+            };
+            
+            difficultyBadge.textContent = `Nível: ${levelNames[currentLevel]}`;
+            difficultyBadge.style.backgroundColor = levelColors[currentLevel];
+            
+            // Mostrar primeira pergunta
+            showQuestion(currentQuestionIndex);
+        }
+
+        function showQuestion(index) {
+            // Atualizar índice da pergunta atual
+            currentQuestionIndex = index;
+            
+            // Obter pergunta atual
+            const question = questions[index];
+            
+            // Atualizar número da pergunta e barra de progresso
+            questionNumber.textContent = `Pergunta ${index + 1} de ${questions.length}`;
+            progressBar.style.width = `${((index + 1) / questions.length) * 100}%`;
+            
+            // Atualizar texto da pergunta
+            questionText.textContent = question.question;
+            
+            // Limpar opções anteriores
+            optionsContainer.innerHTML = '';
+            
+            // Adicionar novas opções
+            question.options.forEach((option, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                
+                // Verificar se esta opção foi selecionada pelo usuário
+                if (userAnswers[index] === optionIndex) {
+                    optionElement.classList.add('selected');
+                }
+                
+                // Adicionar letra da opção
+                const optionLetter = String.fromCharCode(65 + optionIndex); // A, B, C, D
+                optionElement.textContent = `${optionLetter}. ${option}`;
+                
+                // Adicionar evento de clique
+                optionElement.addEventListener('click', () => selectOption(optionIndex));
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Atualizar estado dos botões de navegação
+            prevBtn.disabled = index === 0;
+            
+            // Mostrar botão de finalizar se for a última pergunta
+            if (index === questions.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+            
+            // Verificar se o usuário já respondeu esta pergunta
+            if (userAnswers[index] !== null) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        function selectOption(optionIndex) {
+            // Salvar resposta do usuário
+            userAnswers[currentQuestionIndex] = optionIndex;
+            
+            // Remover seleção de todas as opções
+            const allOptions = document.querySelectorAll('.option');
+            allOptions.forEach(option => option.classList.remove('selected'));
+            
+            // Adicionar seleção à opção clicada
+            allOptions[optionIndex].classList.add('selected');
+            
+            // Habilitar botão de próxima pergunta
+            nextBtn.disabled = false;
+        }
+
+        function showNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                showQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function showPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                showQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function showResults() {
+            // Calcular pontuação
+            score = 0;
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score++;
+                }
+            });
+            
+            // Mostrar tela de resultados e esconder quiz
+            quizContainer.style.display = 'none';
+            resultScreen.style.display = 'block';
+            
+            // Atualizar pontuação
+            finalScore.textContent = `${score}/${questions.length}`;
+            
+            // Determinar mensagem baseada na pontuação
+            const percentage = (score / questions.length) * 100;
+            let message = '';
+            
+            if (percentage >= 90) {
+                message = "Excelente! Você é um expert bíblico!";
+                finalScore.style.color = "#2ecc71";
+            } else if (percentage >= 70) {
+                message = "Muito bom! Você conhece bem as Escrituras!";
+                finalScore.style.color = "#3498db";
+            } else if (percentage >= 50) {
+                message = "Bom! Você tem um conhecimento básico da Bíblia.";
+                finalScore.style.color = "#f39c12";
+            } else {
+                message = "Continue estudando a Palavra de Deus!";
+                finalScore.style.color = "#e74c3c";
+            }
+            
+            scoreText.textContent = message;
+            
+            // Adicionar detalhes das perguntas e respostas
+            resultDetails.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                
+                const userAnswerIndex = userAnswers[index];
+                const isCorrect = userAnswerIndex === question.answer;
+                
+                let resultIcon = '';
+                let resultColor = '';
+                
+                if (isCorrect) {
+                    resultIcon = '<i class="fas fa-check-circle" style="color:#2ecc71"></i>';
+                    resultColor = '#2ecc71';
+                } else {
+                    resultIcon = '<i class="fas fa-times-circle" style="color:#e74c3c"></i>';
+                    resultColor = '#e74c3c';
+                }
+                
+                const questionNumber = index + 1;
+                const userAnswerText = userAnswerIndex !== null ? 
+                    question.options[userAnswerIndex] : "Não respondida";
+                
+                const correctAnswerText = question.options[question.answer];
+                
+                resultItem.innerHTML = `
+                    <div>
+                        <strong>Pergunta ${questionNumber}:</strong> ${question.question}<br>
+                        <span style="color:${resultColor}">Sua resposta: ${userAnswerText}</span><br>
+                        <span style="color:#2ecc71">Resposta correta: ${correctAnswerText}</span>
+                    </div>
+                    <div style="font-size:1.5rem;">
+                        ${resultIcon}
+                    </div>
+                `;
+                
+                resultDetails.appendChild(resultItem);
+            });
+        }
+
+        function restartQuiz() {
+            // Resetar variáveis
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            score = 0;
+            
+            // Mostrar tela inicial
+            introScreen.style.display = 'block';
+            quizContainer.style.display = 'none';
+            resultScreen.style.display = 'none';
+            
+            // Resetar seleção de nível
+            levelButtons.forEach(btn => {
+                btn.style.opacity = '0.7';
+                btn.style.boxShadow = 'none';
+            });
+            
+            startBtn.disabled = true;
+            startBtn.style.opacity = '0.7';
+            startBtn.style.cursor = 'not-allowed';
+            startBtn.textContent = 'Iniciar Quiz';
+        }
+
+        // Função para embaralhar array (opcional)
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Inicialização
+        restartQuiz();
+    </script>
+</body>
+</html>
